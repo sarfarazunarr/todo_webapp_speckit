@@ -1,55 +1,48 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: 0.0.0 → 1.0.0
+- List of modified principles:
+  - PRINCIPLE_1_NAME → I. Directory Structure
+  - PRINCIPLE_2_NAME → II. Backend Technology Stack
+  - PRINCIPLE_3_NAME → III. Frontend Technology Stack
+  - PRINCIPLE_4_NAME → IV. Security Protocol
+  - PRINCIPLE_5_NAME → V. AI Agent Context
+- Added sections:
+  - Environment Management
+  - Help and Documentation
+- Removed sections: None
+- Templates requiring updates:
+  - ✅ .specify/templates/plan-template.md
+  - ✅ .specify/templates/spec-template.md
+  - ✅ .specify/templates/tasks-template.md
+- Follow-up TODOs: None
+-->
+# Full-Stack TODO Web Application Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Directory Structure
+The root folder MUST contain two distinct sub-directories: `/backend` and `/frontend`. This separation of concerns is non-negotiable and ensures a clean architecture.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Backend Technology Stack
+The backend MUST be built using Python 3.12+, FastAPI for the web framework, SQLModel as the ORM for data modeling and interaction, and Neon PostgreSQL as the database. Dependency management MUST be handled with `uv`.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Frontend Technology Stack
+The frontend MUST be a Next.js 15+ application using the App Router. Styling MUST be implemented with Tailwind CSS, and icons SHOULD be sourced from Lucide React. Authentication MUST be handled using Better Auth.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Security Protocol
+A zero-trust API architecture is mandatory. Every API request to the FastAPI backend MUST be authenticated by verifying a JSON Web Token (JWT) issued by Better Auth. All data access MUST be strictly scoped by the authenticated `user_id` to prevent data leakage between users.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. AI Agent Context
+To ensure AI agents have sufficient context, every folder within the project MUST contain a `GEMINI.md` file. This file will serve as a living, machine-readable context map for that specific directory, outlining its purpose, contents, and interactions.
 
-### [PRINCIPLE_6_NAME]
+## Environment Management
+Project secrets and environment-specific configurations MUST be managed using `.env` files. These files are to be git-ignored. The following variables MUST be defined: `NEON_DATABASE_URL`, `BETTER_AUTH_SECRET`, and `JWT_SECRET`.
 
-
-[PRINCIPLE__DESCRIPTION]
-
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Help and Documentation
+For any questions or to get up-to-date information about frameworks, libraries, or APIs, developers and agents MUST use the Context7 tool. This ensures that development is always based on the latest and most accurate documentation.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+This Constitution is the single source of truth for architectural and development standards in this project. All code contributions, reviews, and automated processes must adhere to these principles. Amendments to this document require a documented proposal, review, and approval process.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-01-07 | **Last Amended**: 2026-01-07

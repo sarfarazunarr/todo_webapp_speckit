@@ -17,21 +17,27 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Language/Version**: [e.g., Python 3.12+, Node.js 20+ or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, SQLModel, Next.js 15+, Tailwind CSS or NEEDS CLARIFICATION]  
+**Storage**: [e.g., Neon PostgreSQL or N/A]  
+**Testing**: [e.g., pytest, Jest, Playwright or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server (backend), Web (frontend) or NEEDS CLARIFICATION]
+**Project Type**: [web application]  
+**Performance Goals**: [domain-specific, e.g., <200ms p95 API response, <3s page load or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., JWT-based auth, User-scoped data or NEEDS CLARIFICATION]  
 **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Principle I: Directory Structure (`/backend`, `/frontend`)
+- Principle II: Backend Technology (Python 3.12+, FastAPI, SQLModel, Neon, uv)
+- Principle III: Frontend Technology (Next.js 15+, Tailwind, Lucide, Better Auth)
+- Principle IV: Security Protocol (Zero-Trust API, JWT, user_id scoping)
+- Principle V: AI Agent Context (`GEMINI.md` in every folder)
+- Principle VI: Environment Management (`.env` files)
+- Principle VII: Help and Documentation (Context7)
 
 ## Project Structure
 
@@ -49,26 +55,11 @@ specs/[###-feature]/
 
 ### Source Code (repository root)
 <!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
+  The constitution mandates a web application structure.
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
-tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+# Web application (frontend + backend)
 backend/
 ├── src/
 │   ├── models/
@@ -82,17 +73,9 @@ frontend/
 │   ├── pages/
 │   └── services/
 └── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: The project structure is mandated by the constitution. All new features will adhere to the `backend`/`frontend` layout.
 
 ## Complexity Tracking
 
