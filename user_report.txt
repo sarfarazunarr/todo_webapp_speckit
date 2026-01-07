@@ -1,0 +1,19 @@
+✅ ADR Review Complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 Created ADRs: 1
+   - ADR-001: Core TODO Application Architecture
+
+📚 Referenced Existing: 0
+
+⚠️  Conflicts Detected: 0
+
+Next Steps:
+→ Resolve conflicts before proceeding to /sp.tasks
+→ Review created ADRs with team
+→ Update plan.md if needed
+
+Acceptance Criteria (PASS only if all true)
+- Decisions are clustered (not atomic), with explicit alternatives and tradeoffs
+- Consequences cover both positive and negative outcomes
+- References link back to plan and related docs
