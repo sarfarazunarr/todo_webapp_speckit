@@ -71,8 +71,8 @@ export const authFetch = async (
   options?: RequestInit,
   tokenFromArg?: string | null
 ) => {
-  const headers = {
-    ...options?.headers,
+  const headers: Record<string, string> = {
+    ...(options?.headers as Record<string, string>),
   };
 
   const currentToken = tokenFromArg || Cookies.get("token");
