@@ -5,6 +5,13 @@ build/
 dist/
 wheels/
 *.egg-info
-
+.env
 # Virtual environments
 .venv
+# Universal ignores
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+*.log

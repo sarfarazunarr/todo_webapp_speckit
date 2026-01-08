@@ -9,8 +9,7 @@ Before you begin, ensure you have the following installed:
 -   **Python 3.12+**: For the backend development.
 -   **uv**: A fast Python package installer and dependency resolver.
 -   **Node.js 20+**: For the frontend development.
--   **npm** or **yarn**: Node.js package managers.
--   **Docker** (Optional, but recommended for Neon PostgreSQL): For local database setup or connecting to a remote Neon instance.
+-   **npm**: Node.js package manager.
 -   **Git**: For version control.
 
 ## 2. Environment Setup
@@ -22,15 +21,19 @@ Before you begin, ensure you have the following installed:
     ```
 
 2.  **Create `.env` files:**
-    As per the project constitution, environment variables are managed via `.env` files. Create the following files in the root of the `/backend` and `/frontend` directories, respectively:
+    As per the project constitution, environment variables are managed via `.env` files. Create the following files in the root of the `/backend` and `/frontend` directories, respectively. **Note:** Replace placeholder values with your actual database credentials and a strong secret key.
 
     **`backend/.env`:**
     ```
-    NEON_DATABASE_URL="your_neon_postgresql_connection_string"
-    BETTER_AUTH_SECRET="your_better_auth_secret_key"
-    JWT_SECRET="your_jwt_secret_key"
+    DATABASE_URL="postgresql://PGUSER:PGPASSWORD@PGHOST/PGDATABASE"
+    DATABASE_URL_UNPOOLED="postgresql://PGUSER:PGPASSWORD@PGHOST_UNPOOLED/PGDATABASE"
+    PGHOST="YOUR_PGHOST"
+    PGHOST_UNPOOLED="YOUR_PGHOST_UNPOOLED"
+    PGUSER="YOUR_PGUSER"
+    PGDATABASE="YOUR_PGDATABASE"
+    PGPASSWORD="YOUR_PGPASSWORD"
+    SECRET_KEY="your-secret-key" # IMPORTANT: Change this to a strong, random secret!
     ```
-    Replace the placeholder values with your actual connection string and secret keys. For development, you can use a local PostgreSQL instance or a free Neon.tech project.
 
     **`frontend/.env`:**
     ```
@@ -44,20 +47,16 @@ Before you begin, ensure you have the following installed:
     cd backend
     ```
 
-2.  **Install dependencies using `uv`:**
+2.  **Create a Python virtual environment and install dependencies using `uv`:**
     ```bash
-    uv pip install -r requirements.txt
+    uv venv
+    uv pip install fastapi uvicorn sqlmodel psycopg2-binary pyjwt passlib python-jose
     ```
-    (Note: `requirements.txt` will be generated during implementation, but this is the anticipated command.)
 
-3.  **Run Database Migrations (if applicable):**
-    This step will involve running migrations to set up your database schema. (Details will be provided in the implementation phase.)
-
-4.  **Start the FastAPI application:**
+3.  **Start the FastAPI application:**
     ```bash
-    uvicorn main:app --reload
+    uvicorn src.main:app --reload
     ```
-    (Note: `main:app` assumes your FastAPI application entry point. This will be confirmed during implementation.)
     The backend API will typically run on `http://localhost:8000`.
 
 ## 4. Frontend Setup & Run
@@ -69,12 +68,12 @@ Before you begin, ensure you have the following installed:
 
 2.  **Install dependencies:**
     ```bash
-    npm install # or yarn install
+    npm install
     ```
 
 3.  **Start the Next.js development server:**
     ```bash
-    npm run dev # or yarn dev
+    npm run dev
     ```
     The frontend application will typically run on `http://localhost:3000`.
 
@@ -87,37 +86,38 @@ You can interact with the API using tools like `curl`, Postman, or by using the 
 ```bash
 curl -X POST "http://localhost:8000/auth/signup" \
      -H "Content-Type: application/json" \
-     -d 
-{
+     -d '{
+           "username": "testuser",
            "email": "test@example.com",
            "password": "securepassword"
-         }
+         }'
 ```
 
 **Example: User Login**
 
 ```bash
-curl -X POST "http://localhost:8000/auth/login" \
-     -H "Content-Type: application/json" \
-     -d 
-{
-           "username": "test@example.com",
-           "password": "securepassword"
-         }
+curl -X POST "http://localhost:8000/auth/token" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "username=testuser&password=securepassword"
 ```
 This will return an `access_token`.
 
 **Example: Create a Task (Authenticated)**
 
 ```bash
-curl -X POST "http://localhost:8000/api/{user_id}/tasks" \
+curl -X POST "http://localhost:8000/tasks" \
      -H "Authorization: Bearer <your_access_token>" \
      -H "Content-Type: application/json" \
-     -d 
-{
+     -d '{
            "title": "Buy groceries",
-           "description": "Milk, eggs, bread",
-           "due_date": "2026-01-15"
-         }
+           "description": "Milk, eggs, bread"
+         }'
 ```
-Replace `<your_access_token>` with the token obtained from login and `{user_id}` with the actual user ID.
+Replace `<your_access_token>` with the token obtained from login.
+
+**Example: Get All Tasks (Authenticated)**
+
+```bash
+curl -X GET "http://localhost:8000/tasks" \
+     -H "Authorization: Bearer <your_access_token>"
+```
