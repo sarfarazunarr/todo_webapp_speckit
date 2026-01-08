@@ -22,7 +22,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 class TokenData(BaseModel):
+    id: Optional[int] = None # Added id
     username: Optional[str] = None
+    email: Optional[str] = None # Added email
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -36,14 +38,17 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def verify_token(token: str, credentials_exception) -> str:
+def verify_token(token: str, credentials_exception) -> TokenData: # Changed return type
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        user_id: Optional[int] = payload.get("id") # Get id
+        username: Optional[str] = payload.get("sub")
+        user_email: Optional[str] = payload.get("email") # Get email
+
+        if user_id is None and username is None: # Changed condition
             raise credentials_exception
-        token_data = TokenData(username=username)
-        return token_data.username
+        token_data = TokenData(id=user_id, username=username, email=user_email) # Pass all data
+        return token_data
     except JWTError:
         raise credentials_exception
 
@@ -56,8 +61,14 @@ def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    username = verify_token(token, credentials_exception)
-    user = session.query(User).filter(User.username == username).first()
+    token_data = verify_token(token, credentials_exception) # Get TokenData
+
+    user = None
+    if token_data.id: # Prioritize fetching by id
+        user = session.query(User).filter(User.id == token_data.id).first()
+    elif token_data.username:
+        user = session.query(User).filter(User.username == token_data.username).first()
+
     if user is None:
         raise credentials_exception
     return user
