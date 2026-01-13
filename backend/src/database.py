@@ -6,7 +6,7 @@ dotenv.load_dotenv()
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=True, pool_recycle=1800)
 
 
 def get_session():
