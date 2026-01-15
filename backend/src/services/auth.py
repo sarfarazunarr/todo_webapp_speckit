@@ -34,7 +34,8 @@ def create_user(user_create: UserCreate, session: Session) -> User:
 
 
 def authenticate_user(username: str, password: str, session: Session) -> Optional[User]:
-    user = session.query(User).filter(User.username == username).first()
+    from sqlmodel import select
+    user = session.exec(select(User).where(User.username == username)).first()
     if not user:
         return None
     if not verify_password(password, user.hashed_password):

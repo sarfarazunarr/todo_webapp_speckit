@@ -19,7 +19,16 @@ def create_db_and_tables():
 async def lifespan(app: FastAPI):
     print("Creating tables...")
     create_db_and_tables()
+    
+    # Connect to MCP server for the chatbot
+    print("Connecting to MCP server...")
+    await chat.todo_mcp_server.connect()
+    
     yield
+    
+    # Cleanup MCP server
+    print("Cleaning up MCP server...")
+    await chat.todo_mcp_server.cleanup()
 
 
 app = FastAPI(lifespan=lifespan)

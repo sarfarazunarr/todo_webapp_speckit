@@ -17,4 +17,6 @@ dependencies = [
     "bcrypt>=5.0.0",
     "openai>=1.0.0",
     "mcp[cli]>=1.25.0",
+    "fastmcp>=2.14.3",
+    "openai-agents>=0.6.6",
 ]

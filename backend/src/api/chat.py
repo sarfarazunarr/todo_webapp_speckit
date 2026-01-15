@@ -1,9 +1,14 @@
 import os
+import sys
+import json
 from dotenv import load_dotenv
-from fastapi import APIRouter, Depends, HTTPException
-from openai import OpenAI
+from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel
+from agents import Agent, Runner
+from agents.mcp import MCPServerStdio
 from ..dependencies.auth import get_current_user
 from ..models.user import User
+from .. import tools
 
 load_dotenv()
 
@@ -12,43 +17,52 @@ router = APIRouter(
     tags=["chat"],
 )
 
-# Initialize OpenAI client
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    print("WARNING: OPENAI_API_KEY environment variable not set.")
-    client = None
-else:
-    client = OpenAI(api_key=api_key)
+# Create the MCP server instance
+# using sys.executable to run the mcp server module in the same environment
+todo_mcp_server = MCPServerStdio(
+    params={
+        "command": sys.executable,
+        "args": ["-u", "-m", "src.mcp_server"],
+    },
+    client_session_timeout_seconds=30,
+)
 
-@router.post("/session")
-async def create_chat_session(
+my_agent = Agent(
+    name="Todo Assistant",
+    instructions="You are a helpful assistant that manages tasks. You can add, list, update, and delete tasks for the user. Always use the available tools.",
+    mcp_servers=[todo_mcp_server],
+    model="gpt-4o",
+)
+
+class ChatRequest(BaseModel):
+    message: str
+    thread_id: str = None
+
+@router.post("/message")
+async def chat_message(
+    request: ChatRequest,
     current_user: User = Depends(get_current_user),
 ):
-    if not client:
-        raise HTTPException(
-            status_code=500,
-            detail="OpenAI client is not configured on the server.",
-        )
-
-    # The workflow_id should be the ID of our agent workflow created in the
-    # OpenAI platform and configured as an environment variable.
-    workflow_id = os.getenv("OPENAI_WORKFLOW_ID")
-    if not workflow_id:
-        raise HTTPException(
-            status_code=500,
-            detail="OPENAI_WORKFLOW_ID is not set on the server.",
-        )
-
+    """
+    Endpoint to send authentication message to the agent.
+    """
+    if not os.getenv("OPENAI_API_KEY"):
+         raise HTTPException(status_code=500, detail="OPENAI_API_KEY not set")
+    
+    # We can prepend context to the instructions
+    agent_instructions = f"Current User ID: {current_user.id}. You are acting on behalf of this user. Always pass user_id={current_user.id} to tools."
+    
     try:
-        # Create a new ChatKit session for the current user
-        session = client.chatkit.sessions.create(
-            workflow_id=workflow_id,
-            user_id=str(current_user.id),
+        # Clone agent to avoid polluting global state with per-request instructions
+        agent_runtime = my_agent.clone(
+            instructions=my_agent.instructions + "\n" + agent_instructions
         )
-        return {"client_secret": session.client_secret}
+        
+        result = await Runner.run(
+           agent_runtime,
+           request.message
+        )
+        return {"response": result.final_output}
     except Exception as e:
-        print(f"Error creating ChatKit session: {e}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to create ChatKit session: {e}",
-        )
+        print(f"Agent execution error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

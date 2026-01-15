@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 from . import tools
 import inspect
 
@@ -17,8 +17,12 @@ def setup_tools(mcp_app: FastMCP):
     Registers all functions in the 'tools' module with the MCP server.
     """
     for name, func in inspect.getmembers(tools, inspect.isfunction):
-        if not name.startswith("_"):
+        if not name.startswith("_") and func.__module__ == tools.__name__:
             mcp_app.tool()(func)
 
 # Register the tools with the server
+# Register the tools with the server
 setup_tools(app)
+
+if __name__ == "__main__":
+    app.run()
