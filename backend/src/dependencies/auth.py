@@ -72,3 +72,27 @@ def get_current_user(
     if user is None:
         raise credentials_exception
     return user
+
+
+def get_current_user_from_token(token: str, session: Session) -> User:
+    """
+    Decodes a JWT token and retrieves the user from the database.
+    
+    This function is similar to `get_current_user` but does not use
+    FastAPI's dependency injection, making it suitable for use in
+    other contexts like the FastMCP server.
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    token_data = verify_token(token, credentials_exception)
+
+    user = None
+    if token_data.id:
+        user = session.query(User).filter(User.id == token_data.id).first()
+    
+    if user is None:
+        raise credentials_exception
+    return user

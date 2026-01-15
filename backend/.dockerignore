@@ -10,3 +10,12 @@ Pipfile*
 .git
 .gitignore
 .vscode
+
+# General
+.env*
+*.log
+*.swp
+
+# Tooling
+.idea/
+.vscode/
