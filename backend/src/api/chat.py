@@ -29,6 +29,7 @@ todo_mcp_server = MCPServerStdio(
     params={
         "command": sys.executable,
         "args": ["-u", "-m", "src.mcp_server"],
+        "env": os.environ.copy(),
     },
     client_session_timeout_seconds=30,
 )
