@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 from . import tools
+from .models import user, chat # Register models for SQLAlchemy relationships
 import inspect
 
 load_dotenv()
@@ -20,7 +21,6 @@ def setup_tools(mcp_app: FastMCP):
         if not name.startswith("_") and func.__module__ == tools.__name__:
             mcp_app.tool()(func)
 
-# Register the tools with the server
 # Register the tools with the server
 setup_tools(app)
 

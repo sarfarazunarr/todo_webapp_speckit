@@ -29,12 +29,7 @@ def add_task(title: str, description: str = None, user_id: int = None, ctx: Cont
         # Check if the agent passed a user_id explicitly (trusted environment)
         # OR if we can verify the token.
         owner = None
-        if user_id:
-             owner = db.get(Task.metadata.schema + ".User" if hasattr(Task.metadata, 'schema') else "User", user_id) # Simplify: just assume we can get user by ID if passed.
-             # actually we need to import User model to query it, but let's try a safer way:
-             # Just use the service if possible without owner object if it accepts ID, 
-             # but the service takes 'owner: User'.
-             pass
+
         
         # Fallback for now: require user_id to be passed by the agent who knows who it is talking to.
         # This is insecure for public apps but valid for this agent-on-behalf-of-user loop if the agent is trusted.
@@ -69,7 +64,7 @@ def list_tasks(status: str = None, user_id: int = None, ctx: Context = None) -> 
         if not owner:
             return "Error: User not found."
 
-        tasks = task_service.get_tasks(session=db, owner=owner, status=status)
+        tasks = task_service.get_tasks(session=db, owner=owner, status=status.lower())
         if not tasks:
             return "No tasks found."
         

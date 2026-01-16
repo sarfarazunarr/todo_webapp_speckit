@@ -10,6 +10,7 @@ load_dotenv()
 from .database import engine
 from .api import auth, tasks, chat
 from . import mcp_server
+from .models import chat as chat_models # Register models
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)

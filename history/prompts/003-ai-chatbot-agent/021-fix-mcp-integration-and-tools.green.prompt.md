@@ -1,4 +1,4 @@
----
+```yaml
 id: 021
 title: Fix MCP Integration and Tools
 stage: green
@@ -24,7 +24,7 @@ files:
   - backend/src/mcp_server.py
 tests:
   - Verified via manual testing in chat interface
----
+```
 
 ## Prompt
 
