@@ -28,11 +28,12 @@ class TokenData(BaseModel):
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    from datetime import timezone
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -64,11 +65,37 @@ def get_current_user(
     token_data = verify_token(token, credentials_exception) # Get TokenData
 
     user = None
+    from sqlmodel import select
     if token_data.id: # Prioritize fetching by id
-        user = session.query(User).filter(User.id == token_data.id).first()
+        user = session.exec(select(User).where(User.id == token_data.id)).first()
     elif token_data.username:
-        user = session.query(User).filter(User.username == token_data.username).first()
+        user = session.exec(select(User).where(User.username == token_data.username)).first()
 
+    if user is None:
+        raise credentials_exception
+    return user
+
+
+def get_current_user_from_token(token: str, session: Session) -> User:
+    """
+    Decodes a JWT token and retrieves the user from the database.
+    
+    This function is similar to `get_current_user` but does not use
+    FastAPI's dependency injection, making it suitable for use in
+    other contexts like the FastMCP server.
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    token_data = verify_token(token, credentials_exception)
+
+    user = None
+    if token_data.id:
+        from sqlmodel import select
+        user = session.exec(select(User).where(User.id == token_data.id)).first()
+    
     if user is None:
         raise credentials_exception
     return user

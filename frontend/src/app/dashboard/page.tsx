@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Chatbot } from "@/components/chatbot";
 import {
   Select,
   SelectContent,
@@ -228,7 +229,7 @@ export default function DashboardPage() {
   if (!isAuthenticated) return null;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 pt-20">
+    <div className="min-h-screen bg-slate-950 text-slate-100 pt-20 relative">
       <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 via-transparent to-indigo-500/10 pointer-events-none" />
 
       <div className="container mx-auto px-4 py-8 relative z-10">
@@ -434,6 +435,9 @@ export default function DashboardPage() {
             </Card>
           ))}
         </div>
+      </div>
+      <div className="fixed bottom-8 right-8 z-50">
+        <Chatbot />
       </div>
     </div>
   );

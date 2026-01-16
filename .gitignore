@@ -3,16 +3,24 @@ __pycache__/
 *.py[oc]
 build/
 dist/
-wheels/
 *.egg-info
 .env
+
 # Virtual environments
 .venv
+
+# Node.js
+node_modules/
+dist/
+build/
+*.log
+.env*
+
 # Universal ignores
+.DS_Store
 Thumbs.db
 *.tmp
 *.swp
 .vscode/
 .idea/
 *.log
-node_modules/

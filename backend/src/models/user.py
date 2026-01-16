@@ -17,6 +17,7 @@ class User(SQLModel, table=True):
     update_date: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
     tasks: List["Task"] = Relationship(back_populates="owner")
+    conversations: List["Conversation"] = Relationship(back_populates="user")
 
 
 class UserCreate(SQLModel):
