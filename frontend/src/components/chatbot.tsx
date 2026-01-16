@@ -86,19 +86,21 @@ export function Chatbot() {
   };
 
   return (
-    <div className={cn("fixed z-50 flex flex-col items-end gap-4 transition-all duration-300",
+    <div className={cn("fixed z-50 flex flex-col transition-all duration-300",
       isExpanded
         ? "inset-0 items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-        : "bottom-6 right-6"
+        : isOpen
+          ? "inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:items-end sm:gap-4" // Mobile: Fullscreen. Desktop: Bottom-right
+          : "bottom-6 right-6 items-end gap-4"
     )}>
 
       {/* Main Container */}
       <div
         className={cn(
-          "ease-in-out transform origin-bottom-right transition-all duration-300 bg-zinc-950 border border-white/10 shadow-2xl overflow-hidden flex flex-col",
+          "ease-in-out transition-all duration-300 bg-zinc-950 border border-white/10 shadow-2xl overflow-hidden flex flex-col",
           isExpanded ? "w-full max-w-5xl h-[85vh] rounded-xl scale-100 opacity-100" :
-            isOpen ? "w-[380px] h-[600px] rounded-xl scale-100 opacity-100" :
-              "h-0 w-0 scale-95 opacity-0 overflow-hidden"
+            isOpen ? "w-full h-full sm:w-[380px] sm:h-[600px] rounded-none sm:rounded-xl scale-100 opacity-100" :
+              "h-0 w-0 scale-95 opacity-0 overflow-hidden rounded-xl"
         )}
       >
         {/* Header */}
@@ -188,7 +190,7 @@ export function Chatbot() {
           size="icon"
           className={cn(
             "h-14 w-14 rounded-full shadow-lg transition-all duration-300 hover:scale-105 active:scale-95",
-            isOpen ? "bg-red-500 hover:bg-red-600 rotate-90" : "bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 hover:shadow-violet-500/25"
+            isOpen ? "hidden sm:flex bg-red-500 hover:bg-red-600 rotate-90" : "flex bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 hover:shadow-violet-500/25"
           )}
         >
           {isOpen ? <X className="h-6 w-6 text-white" /> : <MessageCircle className="h-7 w-7 text-white" />}
