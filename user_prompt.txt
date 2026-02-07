@@ -1,1 +1,0 @@
-📋 Architectural decision detected: Core TODO Application Architecture (Testing Strategy, Performance Goals, Scale/Scope, API Design). Document reasoning and tradeoffs? Run `/sp.adr Core-TODO-Application-Architecture`
