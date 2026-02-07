@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReminderDueEvent",
+  "description": "Event published by the worker service when a task reminder is due.",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "type": "string",
+      "const": "reminder.due"
+    },
+    "event_source": {
+      "type": "string",
+      "description": "e.g., /worker-service"
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "task_id": { "type": "integer" },
+        "owner_id": { "type": "integer" },
+        "due_date": { "type": "string", "format": "date-time" },
+        "message": { "type": "string" }
+      },
+      "required": ["task_id", "owner_id", "due_date", "message"]
+    }
+  },
+  "required": ["event_id", "event_type", "event_time", "payload"]
+}

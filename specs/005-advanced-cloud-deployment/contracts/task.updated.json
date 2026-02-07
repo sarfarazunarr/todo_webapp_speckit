@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TaskUpdatedEvent",
+  "description": "Event published when an existing task is updated.",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "type": "string",
+      "const": "task.updated"
+    },
+    "event_source": {
+      "type": "string"
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "owner_id": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": ["string", "null"] },
+        "status": { "type": "string" },
+        "due_date": { "type": ["string", "null"], "format": "date-time" },
+        "priority": { "type": "string" },
+        "recurrence_rule": { "type": ["string", "null"] },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["id", "owner_id"]
+    }
+  },
+  "required": ["event_id", "event_type", "event_time", "payload"]
+}

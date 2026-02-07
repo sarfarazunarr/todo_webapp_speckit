@@ -56,7 +56,7 @@ export default function DashboardPage() {
     setLoading(true);
     setError("");
     try {
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/tasks`;
+      let url = `http://localhost:3500/v1.0/invoke/backend-service/method/tasks`;
       if (filterStatus !== "all") {
         url += `?status=${filterStatus}`;
       }
@@ -94,7 +94,7 @@ export default function DashboardPage() {
 
     try {
       const response = await authFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/tasks`,
+        `http://localhost:3500/v1.0/invoke/backend-service/method/tasks`,
         {
           method: "POST",
           headers: {
@@ -147,7 +147,7 @@ export default function DashboardPage() {
       }
 
       const response = await authFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
+        `http://localhost:3500/v1.0/invoke/backend-service/method/tasks/${taskId}`,
         {
           method: "PUT",
           headers: {
@@ -189,7 +189,7 @@ export default function DashboardPage() {
 
     try {
       const response = await authFetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
+        `http://localhost:3500/v1.0/invoke/backend-service/method/tasks/${taskId}`,
         {
           method: "DELETE",
         },

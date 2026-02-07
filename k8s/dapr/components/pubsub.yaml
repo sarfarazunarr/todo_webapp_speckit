@@ -1,0 +1,18 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pubsub
+  namespace: default
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+  - name: brokers
+    value: "taskflow-kafka-kafka-bootstrap.kafka.svc:9092"
+  - name: authRequired
+    value: "false"
+  - name: consumerGroup
+    value: "tasks-group"
+scopes:
+  - backend
+  - worker

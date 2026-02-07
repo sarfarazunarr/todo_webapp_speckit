@@ -1,4 +1,6 @@
 from typing import List, Optional
+from dapr.clients import DaprClient
+import json
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
@@ -13,13 +15,28 @@ from ..services.tasks import create_task, delete_task, get_task, get_tasks, upda
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
+from dapr.clients import DaprClient
+import json
+
 @router.post("/", response_model=TaskPublic)
 def create_new_task(
     task_create: TaskCreate,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
-    return create_task(task_create, current_user, session)
+    task = create_task(task_create, current_user, session)
+    try:
+        with DaprClient() as d:
+            d.publish_event(
+                pubsub_name='pubsub',
+                topic_name='tasks',
+                data=json.dumps({'event_type': 'task.created', 'payload': task.dict()}),
+                data_content_type='application/json',
+            )
+    except Exception as e:
+        # Log the error, but don't fail the request
+        print(f"Error publishing event: {e}")
+    return task
 
 
 @router.get("/", response_model=List[TaskPublic])
@@ -59,6 +76,17 @@ def update_single_task(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
         )
+    try:
+        with DaprClient() as d:
+            d.publish_event(
+                pubsub_name='pubsub',
+                topic_name='tasks',
+                data=json.dumps({'event_type': 'task.updated', 'payload': task.dict()}),
+                data_content_type='application/json',
+            )
+    except Exception as e:
+        # Log the error, but don't fail the request
+        print(f"Error publishing event: {e}")
     return task
 
 
@@ -72,3 +100,14 @@ def delete_single_task(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
         )
+    try:
+        with DaprClient() as d:
+            d.publish_event(
+                pubsub_name='pubsub',
+                topic_name='tasks',
+                data=json.dumps({'event_type': 'task.deleted', 'payload': {'id': task_id, 'owner_id': current_user.id}}),
+                data_content_type='application/json',
+            )
+    except Exception as e:
+        # Log the error, but don't fail the request
+        print(f"Error publishing event: {e}")
